@@ -1,9 +1,11 @@
 $(document).ready(init);
 
-function init() {
-  console.log("JQ up and rollin");
+let cats = [];
 
+function init() {
   $("#js-submit-cat").on("submit", submitCat);
+
+  getCats();
 }
 
 function submitCat(event) {
@@ -40,7 +42,8 @@ function getCats() {
     url: "/cat",
   })
     .then(response => {
-      console.log(response);
+      cats = response;
+      renderCats();
     })
     .catch(err => {
       console.warn(err);
@@ -49,4 +52,11 @@ function getCats() {
 
 function clearInput() {
   $("#js-input-cat").val("");
+}
+
+function renderCats() {
+  $(".js-cat-output").empty();
+  for (let cat of cats) {
+    $(".js-cat-output").append(`<li>${cat.name}</li>`);
+  }
 }

@@ -18,7 +18,19 @@ router.post("/", (req, res) => {
     });
 });
 
-router.get("/", (req, res) => {});
+router.get("/", (req, res) => {
+  const queryString = `SELECT ("name") FROM "cats"`;
+
+  pool
+    .query(queryString)
+    .then(response => {
+      res.send(response.rows);
+    })
+    .catch(err => {
+      console.warn(err);
+      res.send(500);
+    });
+});
 
 router.put("/", (req, res) => {});
 
