@@ -5,8 +5,6 @@ const pool = require("../modules/pool");
 router.post("/", (req, res) => {
   const queryString = `INSERT INTO "cats" ("name") VALUES ($1);`;
 
-  console.log(req.body.cat);
-
   pool
     .query(queryString, [req.body.cat])
     .then(response => {
@@ -14,12 +12,12 @@ router.post("/", (req, res) => {
     })
     .catch(err => {
       console.warn(err);
-      res.send(500);
+      res.sendStatus(500);
     });
 });
 
 router.get("/", (req, res) => {
-  const queryString = `SELECT * FROM "cats"`;
+  const queryString = `SELECT * FROM "cats" ORDER BY "id"`;
 
   pool
     .query(queryString)
@@ -28,19 +26,33 @@ router.get("/", (req, res) => {
     })
     .catch(err => {
       console.warn(err);
-      res.send(500);
+      res.sendStatus(500);
     });
 });
 
 router.put("/:id", (req, res) => {
-  console.log(req.params.id);
-  console.log(req.body);
+  let newOwned = true;
 
-  res.sendStatus(200);
+  if (req.body.owned == "true") {
+    newOwned = false;
+  } else {
+    newOwned = true;
+  }
+
+  const queryString = `UPDATE "cats" SET "owned"=$1 WHERE id=$2;`;
+
+  pool
+    .query(queryString, [newOwned, req.params.id])
+    .then(response => {
+      res.sendStatus(200);
+    })
+    .catch(err => {
+      console.warn(err);
+      res.sendStatus(500);
+    });
 });
 
 router.delete("/:id", (req, res) => {
-  console.log(req.params.id);
   const queryString = `DELETE FROM "cats" WHERE id=$1;`;
 
   pool
@@ -50,7 +62,7 @@ router.delete("/:id", (req, res) => {
     })
     .catch(err => {
       console.warn(err);
-      res.send(500);
+      res.sendStatus(500);
     });
 });
 

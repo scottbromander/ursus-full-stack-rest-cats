@@ -69,7 +69,6 @@ function deleteCat() {
 }
 
 function toggleCat() {
-  console.log("TOGGLE CAT!");
   const owned = {
     owned: $(this)
       .parent()
@@ -78,8 +77,6 @@ function toggleCat() {
   const catId = $(this)
     .parent()
     .data("id");
-
-  console.log(owned, catId);
 
   $.ajax({
     type: "PUT",
