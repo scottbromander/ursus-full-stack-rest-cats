@@ -25,7 +25,26 @@ function postCat(cat) {
     type: "POST",
     url: "/cat",
     data: dataForServer,
-  });
+  })
+    .then(response => {
+      getCats();
+    })
+    .catch(err => {
+      console.warn(err);
+    });
+}
+
+function getCats() {
+  $.ajax({
+    type: "GET",
+    url: "/cat",
+  })
+    .then(response => {
+      console.log(response);
+    })
+    .catch(err => {
+      console.warn(err);
+    });
 }
 
 function clearInput() {

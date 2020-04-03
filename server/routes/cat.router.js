@@ -1,12 +1,24 @@
 const express = require("express");
 const router = express.Router();
+const pool = require("../modules/pool");
 
 router.post("/", (req, res) => {
-  console.log(req.body);
-  res.sendStatus(201);
+  const queryString = `INSERT INTO "cats" ("name") VALUES ($1);`;
+
+  console.log(req.body.cat);
+
+  pool
+    .query(queryString, [req.body.cat])
+    .then(response => {
+      res.sendStatus(201);
+    })
+    .catch(err => {
+      console.warn(err);
+      res.send(500);
+    });
 });
 
-router.post("/", (req, res) => {});
+router.get("/", (req, res) => {});
 
 router.put("/", (req, res) => {});
 
