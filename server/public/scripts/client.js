@@ -4,7 +4,8 @@ let cats = [];
 
 function init() {
   $("#js-submit-cat").on("submit", submitCat);
-
+  $(".js-cat-output").on("click", ".js-btn-delete-cat", deleteCat);
+  $(".js-cat-output").on("click", ".js-btn-toggle-owned", toggleCat);
   getCats();
 }
 
@@ -50,13 +51,70 @@ function getCats() {
     });
 }
 
+function deleteCat() {
+  const catId = $(this)
+    .parent()
+    .data("id");
+
+  $.ajax({
+    type: "DELETE",
+    url: `/cat/${catId}`,
+  })
+    .then(response => {
+      getCats();
+    })
+    .catch(err => {
+      console.warn(err);
+    });
+}
+
+function toggleCat() {
+  console.log("TOGGLE CAT!");
+  const owned = {
+    owned: $(this)
+      .parent()
+      .data("owned"),
+  };
+  const catId = $(this)
+    .parent()
+    .data("id");
+
+  console.log(owned, catId);
+
+  $.ajax({
+    type: "PUT",
+    url: `/cat/${catId}`,
+    data: owned,
+  })
+    .then(response => {
+      getCats();
+    })
+    .catch(err => {
+      console.warn(err);
+    });
+}
+
 function clearInput() {
   $("#js-input-cat").val("");
 }
 
 function renderCats() {
   $(".js-cat-output").empty();
+
   for (let cat of cats) {
-    $(".js-cat-output").append(`<li>${cat.name}</li>`);
+    $(".js-cat-output").append(`
+        <div data-id=${cat.id} data-owned=${cat.owned}>
+            <span>${cat.name}</span>
+            <button class="js-btn-delete-cat">X</button>
+            <button class="js-btn-toggle-owned">O</button>
+        </div>
+    `);
+
+    if (cat.owned === true) {
+      const $el = $(".js-cat-output")
+        .children()
+        .last();
+      $el.addClass("owned");
+    }
   }
 }

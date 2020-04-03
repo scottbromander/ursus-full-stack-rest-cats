@@ -19,7 +19,7 @@ router.post("/", (req, res) => {
 });
 
 router.get("/", (req, res) => {
-  const queryString = `SELECT ("name") FROM "cats"`;
+  const queryString = `SELECT * FROM "cats"`;
 
   pool
     .query(queryString)
@@ -32,8 +32,26 @@ router.get("/", (req, res) => {
     });
 });
 
-router.put("/", (req, res) => {});
+router.put("/:id", (req, res) => {
+  console.log(req.params.id);
+  console.log(req.body);
 
-router.delete("/", (req, res) => {});
+  res.sendStatus(200);
+});
+
+router.delete("/:id", (req, res) => {
+  console.log(req.params.id);
+  const queryString = `DELETE FROM "cats" WHERE id=$1;`;
+
+  pool
+    .query(queryString, [req.params.id])
+    .then(response => {
+      res.sendStatus(200);
+    })
+    .catch(err => {
+      console.warn(err);
+      res.send(500);
+    });
+});
 
 module.exports = router;
